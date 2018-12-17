@@ -1,3 +1,0 @@
-[submodule "fuzzywuzzy"]
-	path = fuzzywuzzy
-	url = git@github.com:xdrop/fuzzywuzzy.git
