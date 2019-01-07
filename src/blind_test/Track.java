@@ -1,48 +1,32 @@
 package blind_test;
 
-import java.io.InputStream;
-import java.net.URL;
-
-import javazoom.jl.player.Player;
 import me.xdrop.fuzzywuzzy.FuzzySearch;
 
-public class Track 
+public class Track
 {
+	
 	private static final int MATCH_VALUE = 85;
 	
-	private String title;
-	private String artist;
-	private String preview;
-	
-	public Track(String title, String artist, String preview)
-	{
-		this.title = title;
-		this.artist = artist;
-		this.preview = preview;
-	}
+	public String title;
+	public String preview;
+	private static final BlindTestPlayer player = new BlindTestPlayer();
 
 	public void play()
 	{
-		try 
-		{
-			InputStream is = new URL(preview).openStream();
-			Player playMP3 = new Player(is);
-			playMP3.play();
-		} 
-		catch (Exception e)
-		{
-			e.printStackTrace();
-		}
+		if(!player.isAlive()) player.start();
+		player.setURL(preview);
 	}
 	
 	public boolean matchName(String title)
 	{
-		return FuzzySearch.ratio(title, this.title) <= MATCH_VALUE;
+		int match = FuzzySearch.ratio(title, this.title);
+		System.out.println(match);
+		return  match >= MATCH_VALUE;
 	}
 	
 	@Override
 	public String toString()
 	{
-		return title + " by " + artist;
+		return title;
 	}
 }
