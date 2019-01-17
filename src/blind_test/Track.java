@@ -5,22 +5,14 @@ import me.xdrop.fuzzywuzzy.FuzzySearch;
 public class Track
 {
 	
-	private static final int MATCH_VALUE = 85;
+	private static final int MATCH_VALUE = 75;
 	
 	public String title;
 	public String preview;
-	private static final BlindTestPlayer player = new BlindTestPlayer();
-
-	public void play()
-	{
-		if(!player.isAlive()) player.start();
-		player.setURL(preview);
-	}
 	
 	public boolean matchName(String title)
 	{
-		int match = FuzzySearch.ratio(title, this.title);
-		System.out.println(match);
+		int match = FuzzySearch.weightedRatio(title, this.title);
 		return  match >= MATCH_VALUE;
 	}
 	

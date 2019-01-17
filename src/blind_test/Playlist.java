@@ -1,5 +1,6 @@
 package blind_test;
 import java.util.ArrayList;
+import java.util.Collections;
 
 public class Playlist
 {	
@@ -11,6 +12,11 @@ public class Playlist
 	private int currentIndex = 0;
 	public String title;
 	public TrackList tracks;
+	
+	public void shuffle()
+	{
+		if(tracks != null) Collections.shuffle(tracks.data);
+	}
 
 	public Track getTrack()
 	{

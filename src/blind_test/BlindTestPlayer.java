@@ -2,34 +2,28 @@ package blind_test;
 
 import java.io.InputStream;
 import java.net.URL;
-
 import javazoom.jl.player.Player;
 
-public class BlindTestPlayer extends Thread
+public class BlindTestPlayer
 {
 	private Player player = null;
-	private String url = "";
+	private Track track = null;
 	
-	@Override
-	public void run()
+	public synchronized void setTrack(Track track)
 	{
-		while(true) 
+		this.track = track;
+	}
+	
+	public synchronized void playTrack()
+	{
+		if(track != null) 
 		{
-			playURL();
-			notifyAll();
+			playURL(track.preview);
 		}
 	}
 	
-	public void setURL(String url)
+	private synchronized void playURL(String url)
 	{
-		if(player != null) player.close();
-		this.url = url;
-	}
-	
-	public void playURL()
-	{
-		if(url == "") return;
-		
 		try 
 		{
 			InputStream is = new URL(url).openStream();

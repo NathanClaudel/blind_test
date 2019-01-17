@@ -1,46 +1,72 @@
 package blind_test;
 
-import java.io.InputStream;
-import java.net.URL;
-import java.util.Scanner;
-
-import javazoom.jl.player.Player;
-import me.xdrop.fuzzywuzzy.*;
-
 public class BlindTest 
 {
-	private static DeezerClient client = new DeezerClient();
-	private static final TextEntry input = new TextEntry();
+	private DeezerClient client = new DeezerClient();
+	private TextEntry input = new TextEntry(this);
+	private Playlist playlist;
+	private BlindTestPlayer player = new BlindTestPlayer();
 	
 	public static void main(String[] args) 
 	{
-		Playlist playlist = client.getPlaylist("muse");
+		BlindTest blindTest = new BlindTest("Muse");
+		blindTest.play();
+	}
+	
+	public BlindTest(String playlistTitle)
+	{
+		playlist = client.getPlaylist(playlistTitle);
+		playlist.shuffle();
+		System.out.println("Playlist : " + playlist.title);
+		System.out.println("Try to guess which song this is :");
+	}
+	
+	public void play()
+	{
 		input.start();
 		
 		while(!playlist.over())
 		{
-			playlist.getTrack().play();
-			String answer = "";
-			
-			do
-			{
-				answer = getInput();
-			}
-			while (!playlist.getTrack().matchName(answer));
-			
-			System.out.println("Well done ! Song: " + playlist.getTrack().title);
-			playlist.nextTrack();
+			player.setTrack(playlist.getTrack());
+			player.playTrack();
+			endOfTrack();
+			nextTrack();
+		}
+		
+		System.out.println("Game over");
+	}
+	
+	private static boolean success = false;
+	
+	public synchronized void inputTitle(String title)
+	{
+		if(playlist.getTrack().matchName(title))
+		{
+			System.out.println("Well done, this is " + playlist.getTrack().title);
+			success = true;
+			player.stopPlay();
+		}
+		else
+		{
+			System.out.println("Try again !");
 		}
 	}
 	
-	private static synchronized String getInput()
+	private synchronized void nextTrack()
 	{
-		try {
-			input.wait();
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		playlist.nextTrack();
+		System.out.println("Guess the next song :");
+	}
+	
+	public synchronized void endOfTrack()
+	{
+		if(!success)
+		{
+			System.out.println("Time out ! The track was " + playlist.getTrack().title);
 		}
-		return input.getLine();
+		else
+		{
+			success = false;
+		}
 	}
 }
