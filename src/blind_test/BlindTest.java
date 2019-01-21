@@ -1,5 +1,7 @@
 package blind_test;
 
+import java.util.Scanner;
+
 public class BlindTest 
 {
 	private DeezerClient client = new DeezerClient();
@@ -9,7 +11,9 @@ public class BlindTest
 	
 	public static void main(String[] args) 
 	{
-		BlindTest blindTest = new BlindTest("Muse");
+		Scanner scanner = new Scanner(System.in);
+		System.out.println("Enter a playlist name:");
+		BlindTest blindTest = new BlindTest(scanner.nextLine());
 		blindTest.play();
 	}
 	
@@ -34,8 +38,11 @@ public class BlindTest
 		}
 		
 		System.out.println("Game over");
+		input.interrupt();
 	}
 	
+	// Shared variable between the threads in order to know if the 
+	// end of a track is a success or a timeout.
 	private static boolean success = false;
 	
 	public synchronized void inputTitle(String title)

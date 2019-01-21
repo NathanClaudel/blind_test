@@ -1,6 +1,10 @@
 package blind_test;
 import java.util.Scanner;
 
+/*
+ * This class is a thread used to input text. It can interrupt the game if the correct text
+ * is entered.
+ */
 public class TextEntry extends Thread
 {
 	private String lastLine = "";
